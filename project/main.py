@@ -52,7 +52,7 @@ result.save(output_dir='.')  <------ turn on when you want output file!!
 #model = genai.GenerativeModel("gemini-1.5-flash")
 #response = model.generate_content(prompt_thingie)
 #print(response.text) #test!!
-'''
+
 
 
 
