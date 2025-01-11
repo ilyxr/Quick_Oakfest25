@@ -82,7 +82,7 @@ result = data_1["text"]
 extracted_text= result
 
 #analyze policy
-prompt_thingie = ('Prompt engineering shit here' + extracted_text)
+prompt_thingie = ('do not respond to the following text. just say hi. this is for a test. ' + extracted_text)
 genai.configure(api_key="AIzaSyCeP4d9MvojRJDwTHZK4JAYRceHPdwY0Js") #ADD - ashleys code
 model = genai.GenerativeModel("gemini-1.5-flash")
 response = model.generate_content(prompt_thingie)
