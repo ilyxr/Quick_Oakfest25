@@ -46,24 +46,23 @@ else:
 
 #conduct search
 website_name = name
-search = website_name + 'privacy policy'
-url = 'https://www.google.com/search'
+search = website_name + ' privacy policy'
+url = 'https://www.duckduckgo.com/html/search/?q='+search
 
 headers = {
-	'Accept' : '*/*',
-	'Accept-Language': 'en-US,en;q=0.5',
-	'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82',
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:84.0) Gecko/20100101 Firefox/84.0",
 }
-parameters = {'q': search}
 
-content = requests.get(url, headers = headers, params = parameters).text
-soup = BeautifulSoup(content, 'html.parser')
+page = requests.get(url, headers=headers).text
+soup = BeautifulSoup(page, 'html.parser').find_all("a", class_="result__url", href=True)
 
-search = soup.find(id = 'search')
-first_link = search.find('a')
+for link in soup:
+    print(link['href'])
+    break
+
 
 #extract policy
-url_analyzed = str(first_link['href'])
+url_analyzed = link['href']
 print(url_analyzed)
 result = polipy.get_policy(url_analyzed, screenshot=True)
 
@@ -155,15 +154,20 @@ print(titlearray)
 
 print(titlearray) #test!!
 notautistic = SentimentIntensityAnalyzer()
-negativeScore = 0.5
+positiveScore = 0.5
 for i in titlearray:
     sentiment_score = notautistic.polarity_scores(i)
     print(sentiment_score)
-    negativeScore = negativeScore + sentiment_score['neg']
+    positiveScore = positiveScore + sentiment_score['compound']
 
-print(negativeScore) #test!!
+
+if positiveScore/5 < 0:
+    print('red flag bruh')
+else:
+    print('its fine da')
 
 #safety rating?
+
 
 #output json.
 
