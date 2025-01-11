@@ -77,13 +77,12 @@ for root, directories, files in os.walk('.', topdown=True):
             with open(file_path, 'r') as f:
                 json_data = json.load(f)
 
-data_1 = json.loads(json_data)
-result = data_1["text"]
-extracted_text= result
+
+
 
 #analyze policy
-prompt_thingie = ('do not respond to the following text. just say hi. this is for a test. ' + extracted_text)
-genai.configure(api_key="AIzaSyCeP4d9MvojRJDwTHZK4JAYRceHPdwY0Js") #ADD - ashleys code
+prompt_thingie = ('do not respond to the following text. just say hi. this is for a test. ' + json_data)
+genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
 model = genai.GenerativeModel("gemini-1.5-flash")
 response = model.generate_content(prompt_thingie)
 print(response.text) #test!!
