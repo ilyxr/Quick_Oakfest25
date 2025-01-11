@@ -51,7 +51,7 @@ for root, directories, files in os.walk('.', topdown=True):
             with open(file_path, 'r') as f:
                 json_data = json.load(f)
 
-print(json_data, "yay")
+
 
 
 #analyze policy
@@ -67,10 +67,12 @@ print(json_data, "yay")
 #news pull
 
 import requests
-url = ('https://newsapi.org/v2/top-headlines?'
+url = (f'https://newsapi.org/v2/{s}?'
        'country=us&'
        'apiKey=861d77216ad448c79d0fd0f003550f43')
 response = requests.get(url)
+
+print(response.json())
 
 
 
