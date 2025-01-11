@@ -3,17 +3,47 @@
 import polipy
 from bs4 import BeautifulSoup
 import requests
-
+import re
 
 
 #retrieve website
 
+website_input = input("Input/Paste a website hyperlink. ")
+def get_domain(website_input):
+    """Extracts the domain from the website hyperlink, including https://."""
+    # Use regex to match the domain
+    match = re.match(r'(https?://[a-zA-Z0-9.-]+)', website_input)
+    if match:
+        return match.group(1)
+    return None
+
+def get_name_from_domain(domain):
+    """Extracts the name from the domain."""
+    # Remove the https:// or http:// part
+    domain_name = domain.split("://")[-1]
+    
+    # Split the domain by periods
+    parts = domain_name.split('.')
+    
+    # If the domain has two periods, return the middle part
+    if len(parts) >= 3:
+        return parts[-2]
+    # Otherwise, return the first part
+    return parts[0]
+
+domain = get_domain(website_input)
+if domain:
+    name = get_name_from_domain(domain)
+    print(f"Domain: {domain}")
+    print(f"Name: {name}")
+else:
+    print("Invalid website hyperlink.")
 
 
 
 #conduct search
-website_name = 'github' #placeholder
-search = website_name+ 'privacy policy'
+website_name = name
+search = website_name + ' privacy policy'
 #placeholder search
 url = 'https://www.google.com/search'
 
@@ -29,11 +59,6 @@ soup = BeautifulSoup(content, 'html.parser')
 
 search = soup.find(id = 'search')
 first_link = search.find('a')
-
-
-
-
-
 
 #extract policy
 url_analyzed = str(first_link['href'])
@@ -52,8 +77,6 @@ for root, directories, files in os.walk('.', topdown=True):
                 json_data = json.load(f)
 
 
-
-
 #analyze policy
 
 
@@ -68,6 +91,3 @@ for root, directories, files in os.walk('.', topdown=True):
 
 
 #safety rating
-
-rateSafe = requests.post('https://http-observatory.security.mozilla.org/api/v1/analyze', params={"host": f'{{https://github.com}}'}) #PLACEHOLDER; USE VARIABLES LATER
-print(rateSafe)
