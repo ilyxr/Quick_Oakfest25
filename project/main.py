@@ -66,16 +66,8 @@ for root, directories, files in os.walk('.', topdown=True):
 
 #news pull
 
-news_url = (f'https://newsapi.org/v2/top-headlines?q="github"'
-       'country=us&'
-       'apiKey=861d77216ad448c79d0fd0f003550f43&'
-       'sources=forbes')
-
-print(news_url)
-response = requests.get(news_url)
-
-print(response.json())
-
-
 
 #safety rating
+
+rateSafe = requests.post('https://http-observatory.security.mozilla.org/api/v1/analyze', params={"host": f'{{https://github.com}}'}) #PLACEHOLDER; USE VARIABLES LATER
+print(rateSafe)
