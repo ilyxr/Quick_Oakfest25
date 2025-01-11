@@ -7,6 +7,7 @@ import re
 import json
 import os
 import google.generativeai as genai
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 #retrieve website
 
