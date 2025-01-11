@@ -159,7 +159,7 @@ negativeScore = 0.5
 for i in titlearray:
     sentiment_score = notautistic.polarity_scores(i)
     print(sentiment_score)
-    negativeScore = negativeScore + sentiment_score['neg']- sentiment_score['neu']
+    negativeScore = negativeScore + sentiment_score['neg']
 
 print(negativeScore) #test!!
 
