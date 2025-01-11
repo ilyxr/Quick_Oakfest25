@@ -67,7 +67,7 @@ for root, directories, files in os.walk('.', topdown=True):
 #news pull
 
 
-
-
-
 #safety rating
+
+rateSafe = requests.post('https://http-observatory.security.mozilla.org/api/v1/analyze', params={"host": f'{{https://github.com}}'}) #PLACEHOLDER; USE VARIABLES LATER
+print(rateSafe)
