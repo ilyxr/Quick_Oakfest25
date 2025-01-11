@@ -4,7 +4,8 @@ import polipy
 from bs4 import BeautifulSoup
 import requests
 import re
-
+import json
+import os
 
 #retrieve website
 
@@ -43,8 +44,7 @@ else:
 
 #conduct search
 website_name = name
-search = website_name + ' privacy policy'
-#placeholder search
+search = website_name + 'privacy policy'
 url = 'https://www.google.com/search'
 
 headers = {
@@ -66,8 +66,7 @@ print(url_analyzed)
 result = polipy.get_policy(url_analyzed, screenshot=True)
 
 result.save(output_dir='.')
-import json
-import os
+
 
 for root, directories, files in os.walk('.', topdown=True):
     for file in files:
