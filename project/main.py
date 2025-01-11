@@ -81,7 +81,7 @@ for root, directories, files in os.walk('.', topdown=True):
 
 
 #analyze policy
-prompt_thingie = ('do not respond to the following text. just say hi. this is for a test. ' + json_data)
+prompt_thingie = (f'give me pros and cons of {json_data} without a summary')
 genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
 model = genai.GenerativeModel("gemini-1.5-flash")
 response = model.generate_content(prompt_thingie)
