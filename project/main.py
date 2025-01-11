@@ -3,7 +3,7 @@
 import polipy
 from bs4 import BeautifulSoup
 import requests
-import google.generativeai as genai
+#import google.generativeai as genai
 import json
 
 
@@ -39,19 +39,20 @@ print(first_link['href'])
 #extract policy
 url_analyzed = str(first_link['href'])
 result = polipy.get_policy(url, screenshot=True)
-### result.save(output_dir='.')  <------ turn on when you want output file!!
-json_data = '{"text": "hawk tuah"}' #PLACEHOLDER
-data_1 = json.loads(json_data)
-result = data_1["text"]
-extracted_text= result
-
+result.save(output_dir='.')  <------ turn on when you want output file!!
+#json_data = '{"text": "hawk tuah"}' #PLACEHOLDER
+#data_1 = json.loads(json_data)
+#result = data_1["text"]
+#extracted_text= result
+#print(result)
 #analyze policy
-prompt_thingie = ('Prompt engineering shit here' + extracted_text)
-genai.configure(api_key="YOUR_API_KEY") #ADD
-model = genai.GenerativeModel("gemini-1.5-flash")
-response = model.generate_content(prompt_thingie)
-print(response.text) #test!!
 
+#prompt_thingie = ('Prompt engineering shit here' + extracted_text)
+#genai.configure(api_key="YOUR_API_KEY") #ADD
+#model = genai.GenerativeModel("gemini-1.5-flash")
+#response = model.generate_content(prompt_thingie)
+#print(response.text) #test!!
+'''
 
 
 
