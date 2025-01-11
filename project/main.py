@@ -12,8 +12,8 @@ import requests
 
 
 #conduct search
-
-search = 'github privacy policy'
+website_name = 'github' #placeholder
+search = website_name+ 'privacy policy'
 #placeholder search
 url = 'https://www.google.com/search'
 
@@ -66,11 +66,13 @@ for root, directories, files in os.walk('.', topdown=True):
 
 #news pull
 
-import requests
-url = (f'https://newsapi.org/v2/{s}?'
+news_url = (f'https://newsapi.org/v2/top-headlines?q="github"'
        'country=us&'
-       'apiKey=861d77216ad448c79d0fd0f003550f43')
-response = requests.get(url)
+       'apiKey=861d77216ad448c79d0fd0f003550f43&'
+       'sources=forbes')
+
+print(news_url)
+response = requests.get(news_url)
 
 print(response.json())
 
