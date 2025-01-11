@@ -4,6 +4,8 @@ import polipy
 from bs4 import BeautifulSoup
 import requests
 import google.generativeai as genai
+import json
+
 
 #retrieve website
 
@@ -37,10 +39,11 @@ print(first_link['href'])
 #extract policy
 url_analyzed = str(first_link['href'])
 result = polipy.get_policy(url, screenshot=True)
-
 ### result.save(output_dir='.')  <------ turn on when you want output file!!
-
-extracted_text= 'PLACEHOLDER' #placeholder
+json_data = '{"text": "hawk tuah"}' #PLACEHOLDER
+data_1 = json.loads(json_data)
+result = data_1["text"]
+extracted_text= result
 
 #analyze policy
 prompt_thingie = ('Prompt engineering shit here' + extracted_text)
