@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './main.css';
+import Table from './table';
 
 const Main = () => {
     const [value, setValue] = useState('');
@@ -39,7 +40,7 @@ const Main = () => {
                 />
             </div>
             <div className='button-container'>
-                <button className='submit-button'>Analyze</button>
+                <button className='submit-button' onClick={<Table />}>Analyze</button>
             </div>
         </div>
     );
