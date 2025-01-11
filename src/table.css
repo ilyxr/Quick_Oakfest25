@@ -2,16 +2,17 @@
     width: 100%;
     margin: 20px auto;
     padding: 0 20px;
-    overflow-x: auto;
 }
 
 .table {
-    width: 40%;
+    width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background-color: #ffffff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     overflow: hidden;
+    margin-top: 3cm;
 }
 
 .table thead {
@@ -27,6 +28,10 @@
     text-transform: uppercase;
     border-bottom: 2px solid #e9ecef;
     text-align: center;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .table td {
@@ -35,6 +40,9 @@
     color: #555;
     border-bottom: 1px solid #e9ecef;
     text-align: center;
+    word-wrap: break-word;
+    vertical-align: top;
+    max-width: 150px;
 }
 
 .table tbody tr:last-child td {
@@ -47,6 +55,18 @@
 }
 
 /* Responsive styles */
+@media screen and (max-width: 1200px) {
+    .data-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .table-section, .news-section {
+        width: 90%;
+        max-width: none;
+    }
+}
+
 @media screen and (max-width: 768px) {
     .table-container {
         padding: 0 10px;
@@ -59,7 +79,6 @@
     }
 }
 
-/* For very small screens */
 @media screen and (max-width: 480px) {
     .table th,
     .table td {
