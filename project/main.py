@@ -51,7 +51,7 @@ for root, directories, files in os.walk('.', topdown=True):
             with open(file_path, 'r') as f:
                 json_data = json.load(f)
 
-print(json_data)
+print(json_data, "yay")
 
 
 #analyze policy
