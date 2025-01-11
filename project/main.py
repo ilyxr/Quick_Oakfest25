@@ -128,7 +128,9 @@ def news_Fetch():
     content = requests.get(url, headers=headers, params=parameters).text
     soup = BeautifulSoup(content, 'html.parser')
 
+
     search_results = soup.find_all('div', class_='tF2Cxc')
+
 
     results = []
     for result in search_results[:5]:
@@ -136,14 +138,29 @@ def news_Fetch():
         link = result.find('a')['href'] if result.find('a') else 'No link'
         description = result.find('span', class_='aCOpRe').text if result.find('span', class_='aCOpRe') else 'No description'
         results.append({'title': title, 'link': link, 'description': description})
-
+    titlearray = []
     for i, res in enumerate(results, start=1):
         print(f"Result {i}:")
         print(f"Title: {res['title']}")
         print(f"Link: {res['link']}")
+        reqs = requests.get(res['link'])
+        soup = BeautifulSoup(reqs.text,'html.parser')
+        for title in soup.find('title'):
+            titlearray.append(title.get_text())
         #print(f"Description: {res['description']}\n") --- defunct bruh
+    return titlearray
+titlearray = news_Fetch()
+print(titlearray)
 
-news_Fetch()
+print(titlearray) #test!!
+notautistic = SentimentIntensityAnalyzer()
+negativeScore = 0.5
+for i in titlearray:
+    sentiment_score = notautistic.polarity_scores(i)
+    print(sentiment_score)
+    negativeScore = negativeScore + sentiment_score['neg']- sentiment_score['neu']
+
+print(negativeScore) #test!!
 
 #safety rating?
 
