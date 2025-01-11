@@ -3,12 +3,14 @@ import './main.css';
 import './loading.css';
 import Table from './table';
 import News from './news';
+import CombinedScoreComponent from './secure_score1';
 
 const Main = () => {
     const [value, setValue] = useState('');
     const [width, setWidth] = useState(10);
     const [showTable, setShowTable] = useState(false);
     const [showNews, setShowNews] = useState(false);
+    const [showScore, setShowScore] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [progress, setProgress] = useState(0);
 
@@ -27,16 +29,15 @@ const Main = () => {
         let progressTimer;
         if (isLoading) {
             setProgress(0);
-            // Start progress animation
             setTimeout(() => {
                 setProgress(100);
             }, 100);
             
-            // Set timer to show components
             progressTimer = setTimeout(() => {
                 setIsLoading(false);
                 setShowTable(true);
                 setShowNews(true);
+                setShowScore(true);
             }, 10000);
         }
         return () => {
@@ -49,6 +50,7 @@ const Main = () => {
     const handleAnalyze = () => {
         setShowTable(false);
         setShowNews(false);
+        setShowScore(false);
         setIsLoading(true);
     };
 
@@ -89,10 +91,14 @@ const Main = () => {
                 </div>
             )}
             
-            <div className="data-container">
-                {showTable && <div className="table-section"><Table /></div>}
-                {showNews && <div className="news-section"><News /></div>}
+            <div className="max-w-[1240px] mx-auto px-5">
+                <div className="data-container">
+                    {showTable && <div className="table-section"><Table /></div>}
+                    {showNews && <div className="news-section"><News /></div>}
+                </div>
             </div>
+            
+            {showScore && <CombinedScoreComponent />}
         </div>
     );
 };
