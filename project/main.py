@@ -7,7 +7,7 @@ import re
 import json
 import os
 import google.generativeai as genai
-
+import newsapi
 
 #retrieve website
 
@@ -88,9 +88,6 @@ model = genai.GenerativeModel("gemini-1.5-flash")
 response = model.generate_content(prompt_thingie)
 print(response.text) #test!!
 
-#analyze policy
-
-
 
 
 #transform gemini output to readable data
@@ -100,5 +97,36 @@ print(response.text) #test!!
 
 #news pull
 
+def news_Fetch():
+    search = website_name + ' data leaks recent news reports'
+    url = 'https://www.google.com/search'
+
+    headers = {
+        'Accept': '*/*',
+        'Accept-Language': 'en-US,en;q=0.5',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82',
+    }
+    parameters = {'q': search}
+    content = requests.get(url, headers=headers, params=parameters).text
+    soup = BeautifulSoup(content, 'html.parser')
+
+
+    search_results = soup.find_all('div', class_='tF2Cxc')
+
+
+    results = []
+    for result in search_results[:5]:
+        title = result.find('h3').text if result.find('h3') else 'No title'
+        link = result.find('a')['href'] if result.find('a') else 'No link'
+        description = result.find('span', class_='aCOpRe').text if result.find('span', class_='aCOpRe') else 'No description'
+        results.append({'title': title, 'link': link, 'description': description})
+
+    for i, res in enumerate(results, start=1):
+        print(f"Result {i}:")
+        print(f"Title: {res['title']}")
+        print(f"Link: {res['link']}")
+        #print(f"Description: {res['description']}\n") --- defunct bruh
+
+news_Fetch()
 
 #safety rating
