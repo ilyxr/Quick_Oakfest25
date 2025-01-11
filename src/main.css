@@ -2,6 +2,7 @@
 
 body {
     font-family: 'Poppins', sans-serif;
+    background-image: linear-gradient(to bottom right, rgb(140, 69, 254), blue);
 }
 
 .main-container {
@@ -25,18 +26,19 @@ body {
         text-align: center;
         font-size: 5em;
       }
-      
+    
       .title p{
         color: #ffffff;
         text-align: center;
         font-size: 2em;
       }
     min-height: 100vh;
-    background-image: linear-gradient(to bottom right, rgb(140, 69, 254), blue);
 }
 
 .title {
     color: #fff;
+    margin-top:1.5cm;
+    
 }
 
 .input-container {
@@ -47,10 +49,61 @@ body {
 .text-box {
     border-radius: 0.5rem;
     background-color: transparent;
-    width: 10cm;
     height: 1cm;
-    border-color: transparent;
+    border-color: white;
     border-width: 0.09cm;
     border-style: solid;
     text-align: center;
+}
+
+.text-box::placeholder {
+    color: white;
+}
+
+.submit-button {
+    border-radius: 0.5rem;
+    background-image: linear-gradient(to bottom right, rgb(140, 69, 254), blue);
+    width: 5cm;
+    height: 1cm;
+    border-color: white;
+    border-width: 0.09cm;
+    border-style: solid;
+    text-align: center;
+    margin-top: 1.5cm;
+    color:white;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+  background-image: linear-gradient(to bottom right, blue, rgb(140, 69, 254));
+  transition: ease-in;
+  transform: translateY(-3px)
+}
+
+.submit-button:after {
+  content: "";
+  background: linear-gradient(to bottom right, blue, rgb(140, 69, 254));
+  display: block;
+  position: absolute;
+  padding-top: 300%;
+  padding-left: 350%;
+  margin-left: -20px!important;
+  margin-top: -120%;
+  opacity: 0;
+  transition: all 0.8s
+}
+
+.submit-button:active:after {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  transition: 0s
+}
+
+.button-container {
+  text-align: center;
 }
