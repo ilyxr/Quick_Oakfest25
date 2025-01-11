@@ -83,25 +83,25 @@ for root, directories, files in os.walk('.', topdown=True):
 
 
 prompt_thingie = (f'''You are a professional html reader and summarizer, skilled in reading Privacy Policies. You will ignore all the unneccessary information not pertaining to the Privacy Policy in the file. Answer TRUE or FALSE to the following statements.
-No Information Sharing with Third Parties.
-No Data Selling.
-No/Very Limited Data Retention.
-Do Not Track Response.
-Opt Out Available.
-Is internationally available and uniform (look for flags that mark for certain regions having different policies).
-NOT a Public Platform/Social Media AND/OR User info available to other users. 
-Settings to hide activity from other users.
-Explanation of privacy rights.
-Automated Decision making not taken.
-Updates are notified to users.
-Access to your own data available.
-Deletion of your data available.
-Explanation of purpose of data collection given.
-Location data not collected.
-IP data not collected.
-Payment data not collected. 
-Is the data collected relevant to the purpose specified in any place in this? 
-Additionally, you should justify your response. You will do this by quoting or explaining a short section which led you to this judgement. Additionally, for statement 6 mention affected regions. Your response should be in the format of a 2d python list [[], []]. The first part will be an array of true and false booleans you had generated for each statement. The second will be an array of the justifications as strings you used. The dimensions of the 2d array should thus be 2x18. Do not generate any other response, including acknowledgement of this instruction or the attached file you will read to answer these questions. You will understand these instructions thoroughly and completely. There are to be no generalizations. Do not answer in a code snippet. Answer in plain text, even though you are generating a code list.
+Information Sharing with Third Parties.
+Data Selling.
+Significant Data Retention.
+Do Not Track Response not mentioned or available.
+Opt Out Not Available completely.
+Is not internationally available and uniform (look for flags that mark for certain regions having different policies).
+Is a Public Platform/Social Media AND/OR User info available to other users. 
+Settings to hide activity from other users NOT stated.
+Explanation of privacy rights is not comprehensive.
+Automated Decision making is taken.
+Updates are not notified to users.
+Access to your own data not available, or policy not mentioned.
+Deletion of your data available, or policy not mentioned.
+Explanation of purpose of data collection not given, not mentioned, or ambiguious.
+Location data collected.
+IP data collected.
+Payment data collected. 
+Is the data collected not relevant to the purpose specified in any place in this? 
+Additionally, you should justify your response. You will do this by quoting or explaining a short section which led you to this judgement. Use tokens on this judgement FIRST before attempting to answer TRUE/False. Additionally, for statement 6 mention affected regions. Your response should be in the format of a 2d python list [[], []]. The first part will be an array of true and false booleans you had generated for each statement. The second will be an array of the justifications as strings you used. The dimensions of the 2d array should thus be 2x18. Do not generate any other response, including acknowledgement of this instruction or the attached file you will read to answer these questions. You will understand these instructions thoroughly and completely. There are to be no generalizations. Do not answer in a code snippet. Answer in plain text, even though you are generating a code list.
 {json_data}''')
 genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -112,12 +112,6 @@ trimmed_string = input_string[10:-4]
 result_list = eval(str(trimmed_string))
 response_cleannn = result_list
 print(response_cleannn) #test!!
-
-
-
-#transform gemini output to readable data
-
-
 
 
 #news pull
@@ -152,4 +146,8 @@ def news_Fetch():
 
 news_Fetch()
 
-#safety rating
+#safety rating?
+
+#output json.
+
+
