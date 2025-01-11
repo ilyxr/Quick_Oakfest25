@@ -7,7 +7,6 @@ import re
 import json
 import os
 import google.generativeai as genai
-import newsapi
 
 #retrieve website
 
