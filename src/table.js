@@ -2,65 +2,67 @@ import React, { useState, useEffect } from 'react';
 import './table.css';
 
 const Table = () => {
-    const [column, setColumn] = useState([]);
-    const [row, setRow] = useState([]);
+    const [pros, setPros] = useState([]);
+    const [cons, setCons] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/testdata.json')
+        fetch('http://localhost:3000/tableQuickfest.json')
             .then(res => res.json())
             .then(data => {
-                setColumn(Object.keys(data.users[0]));
-                setRow(data.users);
+                // Separate items into pros and cons based on boolean value
+                const prosItems = data.user
+                    .filter(item => !item.boolean)
+                    .map(item => ({
+                        text: item.pro,
+                        judgment: item.judgement
+                    }));
+
+                const consItems = data.user
+                    .filter(item => item.boolean)
+                    .map(item => ({
+                        text: item.con,
+                        judgment: item.judgement
+                    }));
+
+                setPros(prosItems);
+                setCons(consItems);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
     }, []);
 
-    const getHeaderClass = (header) => {
-        switch(header.toLowerCase()) {
-            case 'pros':
-                return 'header-pros';
-            case 'cons':
-                return 'header-cons';
-            default:
-                return '';
-        }
-    };
-
-    const getTooltipText = (value, column) => {
-        // You can customize tooltip text based on column type
-        switch(column.toLowerCase()) {
-            case 'pros':
-                return `Positive aspect: ${value}`;
-            case 'cons':
-                return `Area of concern: ${value}`;
-            default:
-                return `Details: ${value}`;
-        }
-    };
+    // Find the maximum length between pros and cons for table rows
+    const maxRows = Math.max(pros.length, cons.length);
 
     return (
         <div className='table-container'>
             <table className='table'>
                 <thead>
                     <tr>
-                        {column.map((c, i) => (
-                            <th key={i} className={getHeaderClass(c)}>{c}</th>
-                        ))}
+                        <th className='header-pros'>Pros</th>
+                        <th className='header-cons'>Cons</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {row.map((row, i) => (
-                        <tr key={i}>
-                            {column.map((col, j) => (
-                                <td key={j} className={`${getHeaderClass(col)} tooltip`}>
-                                    {row[col]}
+                    {[...Array(maxRows)].map((_, index) => (
+                        <tr key={index}>
+                            <td className='tooltip'>
+                                {pros[index]?.text || ''}
+                                {pros[index]?.judgment && (
                                     <span className="tooltip-text">
-                                        {getTooltipText(row[col], col)}
+                                        {pros[index].judgment}
                                     </span>
-                                </td>
-                            ))}
+                                )}
+                            </td>
+                            <td className='tooltip'>
+                                {cons[index]?.text || ''}
+                                {cons[index]?.judgment && (
+                                    <span className="tooltip-text">
+                                        {cons[index].judgment}
+                                    </span>
+                                )}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
