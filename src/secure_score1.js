@@ -8,7 +8,7 @@ const CombinedScoreComponent = () => {
   useEffect(() => {
     const fetchScoreData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/score.json');
+        const response = await fetch('http://localhost:3000/scoringQuickfest.json');
         const data = await response.json();
         setScoreData(data);
       } finally {
