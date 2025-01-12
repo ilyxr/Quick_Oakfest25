@@ -62,6 +62,7 @@ for link in soup:
 
 
 #extract policy
+url_analyzed = link['href']
 print(url_analyzed)
 result = polipy.get_policy(url_analyzed, screenshot=True)
 
@@ -119,40 +120,38 @@ print(response_cleannn) #test!!
 
 def news_Fetch():
     search = website_name + ' data leaks recent news reports'
-    url = 'https://www.google.com/search'
+    url = 'https://www.duckduckgo.com/html/search/?q='+search
 
     headers = {
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82',
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:84.0) Gecko/20100101 Firefox/84.0",
     }
-    parameters = {'q': search}
-    content = requests.get(url, headers=headers, params=parameters).text
-    soup = BeautifulSoup(content, 'html.parser')
 
+    page = requests.get(url, headers=headers).text
+    soup = BeautifulSoup(page, 'html.parser').find_all("a", class_="result__url", href=True)
+    counter_thing=0
+    results=[]
 
-    search_results = soup.find_all('div', class_='tF2Cxc')
+    for link in soup:
+        results.append(link['href'])
+        counter_thing+=1
+        print(link['href'])
+        if counter_thing>50:
+            break
+    
+    titlearray=[]
 
+    for i in range(50):
+        url_thinga = results[i]
+        reqs = requests.get(url)
+        soup_thang = BeautifulSoup(reqs.text, 'html.parser')
+        for title in soup.find_all('title'):
+            temp_thanga = title.get_text()
+        titlearray.append(temp_thanga)
 
-    results = []
-    for result in search_results[:5]:
-        title = result.find('h3').text if result.find('h3') else 'No title'
-        link = result.find('a')['href'] if result.find('a') else 'No link'
-        description = result.find('span', class_='aCOpRe').text if result.find('span', class_='aCOpRe') else 'No description'
-        results.append({'title': title, 'link': link, 'description': description})
-    titlearray = []
-    for i, res in enumerate(results, start=1):
-        print(f"Result {i}:")
-        print(f"Title: {res['title']}")
-        print(f"Link: {res['link']}")
-        reqs = requests.get(res['link'])
-        soup = BeautifulSoup(reqs.text,'html.parser')
-        for title in soup.find('title'):
-            titlearray.append(title.get_text())
-        #print(f"Description: {res['description']}\n") --- defunct bruh
     return titlearray
+
 titlearray = news_Fetch()
-print(titlearray)
+
 
 print(titlearray) #test!!
 notautistic = SentimentIntensityAnalyzer()
@@ -163,7 +162,7 @@ for i in titlearray:
     positiveScore = positiveScore + sentiment_score['compound']
 
 
-if positiveScore/5 < 0:
+if positiveScore/50 < 0:
     print('red flag bruh')
 else:
     print('its fine da')
