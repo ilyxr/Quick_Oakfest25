@@ -62,7 +62,6 @@ for link in soup:
 
 
 #extract policy
-url_analyzed = link['href']
 print(url_analyzed)
 result = polipy.get_policy(url_analyzed, screenshot=True)
 
@@ -110,9 +109,12 @@ trimmed_string = input_string[10:-4]
 # Convert the resulting string to a list of characters
 result_list = eval(str(trimmed_string))
 response_cleannn = result_list
+
+
+response_cleannn.append(['Information sharing with Third Parties.', 'Data selling', 'Significant Data Retention', 'Do Not Track Response not mentioned or available', 'Opt Out not available completely.', 'Is not internationally available and uniform.', 'Is a Public Platform/Social Media AND/OR User info available to other users.', 'Settings to hide activity from other users NOT stated.', 'Explanation of privacy rights is not comprehensive.', 'Automated decision making is taken.', 'Updates are not notified to users.', 'Access to your own data not available, or policy not mentioned.', 'Deletion of your data not available, or policy not mentioned.', 'Explanation of purpose of data collection not given, not mentioned, or ambiguious.', 'Location data collected.', 'IP data collected.', 'Payment data collected.', 'Irrelevant data collection.'])
+response_cleannn.append(['No/Limited information sharing with Third Parties.', 'No data selling at all', 'No or Extremely Short Data Retention', 'Do Not Track Response mentioned positively or available', 'Opt Out completely available.', 'Is internationally available and uniform', 'Other users do not interact with your data.', 'Settings to hide activity from other users stated.', 'Explanation of privacy rights is comprehensive.', 'Automated Decision making is not taken.', 'Updates are notified to users.', 'Access to your own data available.', 'Deletion of your data available.', 'Explanation of purpose of data collection is clear.', 'Location data not collected.', 'IP data not collected.', 'Payment data not collected or payment data not mentioned.', 'All data colection is relevant'])
+
 print(response_cleannn) #test!!
-
-
 #news pull
 
 def news_Fetch():
