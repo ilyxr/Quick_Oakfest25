@@ -1,22 +1,22 @@
 {
     "users":[{
-        "adv":"good",
-        "disadv":"bad"
+        "pros":"good",
+        "cons":"bad"
     },
     {
-        "adv":"good",
-        "disadv":"bad"
+        "pros":"good",
+        "cons":"bad"
     },
     {
-        "adv":"good",
-        "disadv":"bad"
+        "pros":"good",
+        "cons":"bad"
     },
     {
-        "adv":"good",
-        "disadv":"bad"
+        "pros":"good",
+        "cons":"bad"
     },
     {
-        "adv":"good",
-        "disadv":"bad"
+        "pros":"good",
+        "cons":"bad"
     }]
 }

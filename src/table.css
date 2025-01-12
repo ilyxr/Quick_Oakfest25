@@ -34,6 +34,14 @@
     text-overflow: ellipsis;
 }
 
+.header-pros {
+    color: #28a745 !important;
+}
+
+.header-cons {
+    color: #dc3545 !important;
+}
+
 .table td {
     padding: 12px 15px;
     font-size: 14px;
@@ -43,6 +51,7 @@
     word-wrap: break-word;
     vertical-align: top;
     max-width: 150px;
+    position: relative;
 }
 
 .table tbody tr:last-child td {
@@ -52,6 +61,47 @@
 .table tbody tr:hover {
     background-color: #f8f9fa;
     transition: background-color 0.2s ease;
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: relative;
+    cursor: pointer;
+}
+
+.tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.tooltip .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Responsive styles */

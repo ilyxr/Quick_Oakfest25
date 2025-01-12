@@ -18,20 +18,26 @@ const News = () => {
     }, []);
 
     return (
-        <div className='table-container'>
-            <table className='table'>
+        <div className='news-container'>
+            <table className='news'>
                 <thead>
                     <tr>
-                        {column.map((c, i) => (
-                            <th key={i}>{c}</th>
-                        ))}
+                        <th>News</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {row.map((row, i) => (
+                    {row.map((rowData, i) => (
                         <tr key={i}>
-                            {column.map((col, j) => (
-                                <td key={j}>{row[col]}</td>
+                            {Object.entries(rowData).map(([key, value], j) => (
+                                <td key={j}>
+                                    <a 
+                                        href={value}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {key}
+                                    </a>
+                                </td>
                             ))}
                         </tr>
                     ))}

@@ -57,7 +57,7 @@ const Main = () => {
     return (
         <div className="main-container">
             <div className="title">
-                <h1>Placeholder</h1>
+                <h1>Policy Reader</h1>
             </div>
             
             <div className='input-container'>

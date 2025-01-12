@@ -12,7 +12,7 @@
   height: 100%;
   clip-path: circle(50%);
   background: conic-gradient(
-      rgb(140, 69, 254) var(--progress),
+      rgb(140, 69, 254),blue, rgb(140, 69, 254)  var(--progress),
       #e5e7eb 0deg
   );
   border-radius: 50%;
