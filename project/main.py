@@ -43,7 +43,6 @@ else:
     print("Invalid website hyperlink.")
 
 
-
 #conduct search
 website_name = name
 search = website_name + ' privacy policy'
@@ -78,6 +77,7 @@ for root, directories, files in os.walk('.', topdown=True):
 
 
 
+
 #analyze stuff
 
 
@@ -105,18 +105,35 @@ Additionally, you should justify your response. You will do this by quoting or e
 genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
 model = genai.GenerativeModel("gemini-1.5-flash")
 response = model.generate_content(prompt_thingie)
+
+
+
 input_string = response.text
 trimmed_string = input_string[10:-4]
 # Convert the resulting string to a list of characters
 result_list = eval(str(trimmed_string))
 response_cleannn = result_list
 
-
 response_cleannn.append(['Information sharing with Third Parties.', 'Data selling', 'Significant Data Retention', 'Do Not Track Response not mentioned or available', 'Opt Out not available completely.', 'Is not internationally available and uniform.', 'Is a Public Platform/Social Media AND/OR User info available to other users.', 'Settings to hide activity from other users NOT stated.', 'Explanation of privacy rights is not comprehensive.', 'Automated decision making is taken.', 'Updates are not notified to users.', 'Access to your own data not available, or policy not mentioned.', 'Deletion of your data not available, or policy not mentioned.', 'Explanation of purpose of data collection not given, not mentioned, or ambiguious.', 'Location data collected.', 'IP data collected.', 'Payment data collected.', 'Irrelevant data collection.'])
 response_cleannn.append(['No/Limited information sharing with Third Parties.', 'No data selling at all', 'No or Extremely Short Data Retention', 'Do Not Track Response mentioned positively or available', 'Opt Out completely available.', 'Is internationally available and uniform', 'Other users do not interact with your data.', 'Settings to hide activity from other users stated.', 'Explanation of privacy rights is comprehensive.', 'Automated Decision making is not taken.', 'Updates are notified to users.', 'Access to your own data available.', 'Deletion of your data available.', 'Explanation of purpose of data collection is clear.', 'Location data not collected.', 'IP data not collected.', 'Payment data not collected or payment data not mentioned.', 'All data colection is relevant'])
 
-print(response_cleannn) #test!!
-#news pull
+# Specified keys for the JSON structure
+keys = ["boolean", "judgement", "con", "pro"]
+
+
+# Transpose the 2D list to group elements by their index
+transposed_data = list(zip(*response_cleannn))
+
+# Create the JSON structure
+result_blob = {"user": [dict(zip(keys, values)) for values in transposed_data]}
+
+# Convert to JSON string (for saving or display purposes)
+json_output = json.dumps(result_blob, indent=4)
+
+# Save to a file (optional)
+with open("tableQuickfest.json", "w") as file:
+    file.write(json_output)
+
 
 def news_Fetch():
     search = website_name + ' data leaks recent news reports'
@@ -134,26 +151,41 @@ def news_Fetch():
     for link in soup:
         results.append(link['href'])
         counter_thing+=1
-        print(link['href'])
-        if counter_thing>50:
+        if counter_thing>=50:
             break
-    
+    print(results)
     titlearray=[]
 
-    for i in range(50):
+    for i in range(len(results)-1):
         url_thinga = results[i]
-        reqs = requests.get(url)
+        reqs = requests.get(url_thinga)
         soup_thang = BeautifulSoup(reqs.text, 'html.parser')
-        for title in soup.find_all('title'):
+        for title in soup_thang.find_all('title'):
             temp_thanga = title.get_text()
-        titlearray.append(temp_thanga)
+            titlearray.append(temp_thanga)
 
-    return titlearray
+    return [results, titlearray]
 
-titlearray = news_Fetch()
+thingie=news_Fetch()
+titlearray = thingie[1]
+links= thingie[0]
+
+keys=titlearray
+values=links
+
+# Build the JSON structure
+json_structure = {
+    "users": [{key: value} for key, value in zip(keys, values)]
+}
+
+# Convert the structure to a JSON string
+json_string = json.dumps(json_structure, indent=4)
+
+# Print the JSON string
+with open("newsQuickfest.json", "w") as file:
+    file.write(json_string)
 
 
-print(titlearray) #test!!
 notautistic = SentimentIntensityAnalyzer()
 positiveScore = 0.5
 for i in titlearray:
@@ -161,15 +193,26 @@ for i in titlearray:
     print(sentiment_score)
     positiveScore = positiveScore + sentiment_score['compound']
 
+def analysis():
+    if positiveScore/50 < 0:
+        return ('The media does not seem to happy about this one...')
+    else:
+        return ('There is not too much hateful rhetoric in the media this time...')
 
-if positiveScore/50 < 0:
-    print('red flag bruh')
-else:
-    print('its fine da')
+analysis_report = analysis()
+genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
+response_no = model.generate_content(f"Generate a response of an integer between 0 and 100 rating data security on {name}. Only respond with this number and nothing else.")
 
-#safety rating?
+clean_no = int(re.sub(r"[^0-9]", "", response_no))
+
+json_data = {
+    "score": clean_no,
+    "analysis": analysis_report
+}
 
 
-#output json.
+# Save the JSON structure to a file
+with open("scoringQuickfest.json", "w") as json_file:
+    json.dump(json_data, json_file, indent=4)
 
 

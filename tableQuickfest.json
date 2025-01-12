@@ -1,0 +1,112 @@
+{
+    "user": [
+        {
+            "boolean": false,
+            "judgement": "The policy states that Canva may share your information with third-party service providers for the purpose of providing the Service to you, to facilitate Canva\u2019s legitimate interests or if you consent.  This implies sharing, but not necessarily selling.",
+            "con": "Information sharing with Third Parties.",
+            "pro": "No/Limited information sharing with Third Parties."
+        },
+        {
+            "boolean": false,
+            "judgement": "The policy explicitly states that Canva does not sell or rent the information collected directly from you or about you from third parties with third-party ad servers or ad networks for such parties\u2019 own marketing purposes.",
+            "con": "Data selling",
+            "pro": "No data selling at all"
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy mentions that following termination or deactivation of your user account, Canva will retain your profile information and User Content for a commercially reasonable time, and for as long as they have a valid purpose to do so. This indicates significant data retention.",
+            "con": "Significant Data Retention",
+            "pro": "No or Extremely Short Data Retention"
+        },
+        {
+            "boolean": false,
+            "judgement": "The policy does not mention Do Not Track.",
+            "con": "Do Not Track Response not mentioned or available",
+            "pro": "Do Not Track Response mentioned positively or available"
+        },
+        {
+            "boolean": false,
+            "judgement": "The policy provides several opt-out options, such as opting out of enrichment using third-party data, opting out of marketing messages, and managing how Canva analyzes your data for analytics and machine learning.",
+            "con": "Opt Out not available completely.",
+            "pro": "Opt Out completely available."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy mentions data is stored and processed in the United States, Australia, Singapore, European Union, United Kingdom, Philippines and New Zealand. This indicates the policy is not internationally uniform.",
+            "con": "Is not internationally available and uniform.",
+            "pro": "Is internationally available and uniform"
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy explicitly mentions that any information or content that you voluntarily disclose for posting to the Service, such as public User Content, becomes available to be read, collected and used by the public.  It also describes how information can be shared within teams and through design collaboration.",
+            "con": "Is a Public Platform/Social Media AND/OR User info available to other users.",
+            "pro": "Other users do not interact with your data."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy does not state the availability of settings to hide activity from other users.",
+            "con": "Settings to hide activity from other users NOT stated.",
+            "pro": "Settings to hide activity from other users stated."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy does not comprehensively explain all your privacy rights; while some are mentioned, the explanation isn't exhaustive. ",
+            "con": "Explanation of privacy rights is not comprehensive.",
+            "pro": "Explanation of privacy rights is comprehensive."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy mentions Canva may analyze your activity, content, media uploads and related data to train its algorithms and AI products. This suggests automated decision-making.",
+            "con": "Automated decision making is taken.",
+            "pro": "Automated Decision making is not taken."
+        },
+        {
+            "boolean": false,
+            "judgement": "The policy states that when changes are made, Canva will notify you on its website or by email. ",
+            "con": "Updates are not notified to users.",
+            "pro": "Updates are notified to users."
+        },
+        {
+            "boolean": false,
+            "judgement": "The policy states that you can request access, correction or deletion of the data Canva holds on you by contacting privacy@canva.com.",
+            "con": "Access to your own data not available, or policy not mentioned.",
+            "pro": "Access to your own data available."
+        },
+        {
+            "boolean": false,
+            "judgement": "The policy states that you can request access, correction or deletion of the data Canva holds on you by contacting privacy@canva.com.",
+            "con": "Deletion of your data not available, or policy not mentioned.",
+            "pro": "Deletion of your data available."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy's explanation of the purpose of data collection is somewhat ambiguous in places; while some purposes are explicitly stated, others are less clear.",
+            "con": "Explanation of purpose of data collection not given, not mentioned, or ambiguious.",
+            "pro": "Explanation of purpose of data collection is clear."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy explicitly states that Canva collects location data.",
+            "con": "Location data collected.",
+            "pro": "Location data not collected."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy mentions that server logs may include your IP address.",
+            "con": "IP data collected.",
+            "pro": "IP data not collected."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy mentions that Canva collects information when you make transactions via the Service, this implies payment data collection. The policy also explains how billing information is handled when working with third-party providers and administered accounts.",
+            "con": "Payment data collected.",
+            "pro": "Payment data not collected or payment data not mentioned."
+        },
+        {
+            "boolean": true,
+            "judgement": "The policy does not explicitly state that the collected data is irrelevant to its specified purpose; however, there are some ambiguous sections where the linkage isn't explicitly clear.",
+            "con": "Irrelevant data collection.",
+            "pro": "All data colection is relevant"
+        }
+    ]
+}
