@@ -6,7 +6,7 @@ const News = () => {
     const [row, setRow] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/testdata1.json')
+        fetch('http://localhost:3000/newsQuickfest.json')
             .then(res => res.json())
             .then(data => {
                 setColumn(Object.keys(data.users[0]));
