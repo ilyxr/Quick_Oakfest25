@@ -1,385 +1,217 @@
-#Cybersecurity is cancer
-
-from google import genai
-from google.genai import types
-import httpx
-import os
-import base64
-import json
-import requests
-import time
-import urllib
-from payloads import PAYLOADS
+#hAWK TUAH!
+#welcome
+import polipy
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse, parse_qs
-from dotenv import load_dotenv
-import math
+import requests
 import re
-import sys 
+import json
+import os
+import google.generativeai as genai
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-load_dotenv()
-###edge
+#retrieve website
 
+website_input = input("Input/Paste a website hyperlink. ")
+def get_domain(website_input):
+    """Extracts the domain from the website hyperlink, including https://."""
+    # Use regex to match the domain
+    match = re.match(r'(https?://[a-zA-Z0-9.-]+)', website_input)
+    if match:
+        return match.group(1)
+    return None
 
-
-
-
-#TESTING GEMINI
-
-
-
-
-hubstring = str(input("Paste a valid Github URL: "))
-
-def github_read_file(username, repository_name, file_path, github_token=None):
-    headers = {}
-    if github_token:
-        headers['Authorization'] = f"token {github_token}"
-        
-    url = f'https://api.github.com/repos/{username}/{repository_name}/contents/{file_path}'
-    r = requests.get(url, headers=headers)
-    r.raise_for_status()
-    data = r.json()
-    file_content = data['content']
-    file_content_encoding = data.get('encoding')
-    if file_content_encoding == 'base64':
-        file_content = base64.b64decode(file_content).decode()
-
-    return file_content
-
-
-def hubrunner():
-    github_token = os.environ['GITHUB_TOKEN']
-    parsed = urlparse(hubstring)
-    parts = parsed.path.strip('/').split('/')
-    if len(parts) < 5 or parts[2] != "blob":
-        raise ValueError("Invalid GitHub file URL format")
-   
-    username = parts[0]
-    repository_name = parts[1]
-    branch = parts[3]
-    file_path = "/".join(parts[4:])
-    file_content = github_read_file(username, repository_name, file_path, github_token=github_token)
-    data = (file_content)
-    #print(data)
-    #dont need this rn
-    return data
-
-my_code_file_i_love_hu_tao = hubrunner()
-
-###
-#TEMPORARY PROMPT
-prompt = "You are an expert cybersecurity analyst tasked with detecting weaknesses in codebases. You are to be given a code file where you must detect all the flaws. These flaws include leaked secrets like .env files or keys, vulnerable literal string interpretation, injection vulnerabilities, path traversal vulnerabilities, XSS security failures, deserialization vulnerabilities, symmetric encryption, outdated encryption algorithms, open ports, not using https or tls, sending sensitive data in query strings, typosquatting and outdated packages, Insecure Direct Object Reference, etc. This is no means a comprehensive list, but look out for them. This is the code to review: " + my_code_file_i_love_hu_tao + "  Once you have reviewed this, you are to report on it in a structured manner. Respond in a CSV format with each row having one error, represented by its line number which MUST be an integer, the  in the line word for word, and the reasoning and then solution. I also want a new last row to just to have your overall security score of this. This should be a number from 1-100 and ONLY a float. Do NOT use commas in your text responses. Dummy example row: 45, clientkey=totallymyclientkey9873824873849832848947432793248, The key is exposed and hardcoded and could be stolen., Use an environment file. Dummy example last row: 88"
-
-api_key1 = os.getenv("GOOGLE_API_KEY")
-
-client = genai.Client(api_key=api_key1)
-'''
-response = client.models.generate_content(
-    model="gemini-3-flash-preview",
-    contents=prompt
-)
-
-print(response.text)
-'''
-#TURN ON AT END
-
-
-
-
-
-#TESTING SQLI
-
-
-
-
-
-#like and sub
-
-#me and epstein are working on this together, we are testing the endpoints for vulnerabilities using the payloads we have defined in the payloads.py file. We will be using the requests library to send requests to the endpoints and check for any vulnerabilities. We will be looking for things like SQL injection, XSS, and other common vulnerabilities. We will also be checking the response status codes and the response body for any signs of vulnerabilities.
-
-#^ wtf did ai generate dawg i am NEVER using the autocomplete feature again lol
-
-def find_inputs(base_url):
-    endpoints = []
-    r = requests.get(base_url)
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    # find forms or smth idk
-    for form in soup.find_all("form"):
-        action = form.get("action")
-        method = form.get("method", "get").lower()
-
-        inputs = []
-        for inp in form.find_all("input"):
-            name = inp.get("name")
-            if name:
-                inputs.append(name)
-        endpoints.append({
-            "url": urljoin(base_url, action),
-            "method": method,
-            "inputs": inputs
-        })
-
-    #brotato
-    parsed = urlparse(base_url)
-    params = parse_qs(parsed.query)
-
-    if params:
-        endpoints.append({
-            "url": base_url,
-            "method": "get",
-            "inputs": list(params.keys())
-        })
-    return endpoints
-
-def test_endpoint(endpoint):
-    findings = []
-    for param in endpoint["inputs"]:
-        for payload in PAYLOADS:
-            data = {param: payload}
-
-            try:
-                if endpoint["method"] == "post":
-                    r = requests.post(endpoint["url"], data=data)
-                else:
-                    r = requests.get(endpoint["url"], params=data)
-                findings.append({
-                    "param": param,
-                    "payload": payload,
-                    "status": r.status_code,
-                    "response": r.text[:500]
-                })
-            except Exception as e:
-                findings.append({
-                    "param": param,
-                    "payload": payload,
-                    "error": str(e)
-                })
-    return findings
-
-SQL_ERRORS = [
-    "sql syntax",
-    "mysql",
-    "sqlite",
-    "postgres",
-    "unterminated",
-    "odbc",
-    "database error",
-    "query failed"
-]
-
-def detect_issues(test_results):
-    issues = []
-    for result in test_results:
-        if "response" in result:
-            text = result["response"].lower()
-            #daisy daisy give me your answer do
-            #does this look like a SQL error to you?
-            #if it does, im a lolicon too
-            #damn is 
-            #ENRIQUEEE
-
-            for err in SQL_ERRORS:
-                if err in text:
-                    issues.append({
-                        "param": result["param"],
-                        "payload": result["payload"],
-                        "issue": "Possible SQL injection",
-                        "indicator": err
-                    })
-
-    return issues
-
-def generate_report(issues):
-    print("\nreport\n")
-    if not issues:
-        print("No obvious SQLi indicators detected.")
-        return
-    for i, issue in enumerate(issues, 1):
-        print(f"{i}. Parameter: {issue['param']}")
-        print(f"   Payload: {issue['payload']}")
-        print(f"   Indicator: {issue['indicator']}")
-        print("")
-
-TARGET = ("http://localhost:8501/")
-
-print("checking the following: :", TARGET)
-endpoints = find_inputs(TARGET)
-all_results = []
-for ep in endpoints:
-    print("Testing endpoint:", ep["url"])
-    results = test_endpoint(ep)
-    all_results.extend(results)
-issues = detect_issues(all_results)
-generate_report(issues)
-
-
-
-
-
-#TESTING XSS
-
-
-
-
-
-TARGET_URL = "http://localhost:8501"
-PAYLOAD_FILE = "xss_payloads.txt"
-SUBMISSION_URL = TARGET_URL + "/resultsPage"
-
-vulnerabilities_found = []
-
-def load_payloads(filepath):
-    try:
-        with open(filepath, 'r') as f:
-            payloads = [line.strip() for line in f if line.strip() and not line.strip().startswith('#')]
-        return payloads
-    except FileNotFoundError:
-        print(f"fuck: '{filepath}' not found.")
-        return []
-
-def scan_reflected_xss(base_url, payloads):
-    global vulnerabilities_found
-    print("\n scan for reflected xss or something")
-    endpoint = f"{base_url}/reflected"
-    param = "search"
+def get_name_from_domain(domain):
+    """Extracts the name from the domain."""
+    # Remove the https:// or http:// part
+    domain_name = domain.split("://")[-1]
     
-    for payload in payloads:
-        encoded_payload = urllib.parse.quote_plus(payload)
-        full_url = f"{endpoint}?{param}={encoded_payload}"
-        try:
-            response = requests.get(full_url, timeout=5)
-            if payload in response.text:
-                finding = {
-                    "type": "Reflected XSS",
-                    "endpoint": endpoint,
-                    "payload": payload,
-                    "proof_url": full_url
-                }
-                vulnerabilities_found.append(finding)
-                print(f"[+] VULNERABLE (Reflected): {endpoint}")
-                print(f"    - Payload: {payload}")
-                print("-" * 20)
+    # Split the domain by periods
+    parts = domain_name.split('.')
+    
+    # If the domain has two periods, return the middle part
+    if len(parts) >= 3:
+        return parts[-2]
+    # Otherwise, return the first part
+    return parts[0]
 
-        except requests.exceptions.RequestException as e:
-            print(f"problem connecting to {full_url}: {e}")
+domain = get_domain(website_input)
+if domain:
+    name = get_name_from_domain(domain)
+    print(f"Domain: {domain}")
+    print(f"Name: {name}")
+else:
+    print("Invalid website hyperlink.")
+
+
+#conduct search
+website_name = name
+search = website_name + ' privacy policy'
+url = 'https://www.duckduckgo.com/html/search/?q='+search
+
+headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:84.0) Gecko/20100101 Firefox/84.0",
+}
+
+page = requests.get(url, headers=headers).text
+soup = BeautifulSoup(page, 'html.parser').find_all("a", class_="result__url", href=True)
+
+for link in soup:
+    print(link['href'])
+    break
+
+
+#extract policy
+url_analyzed = link['href']
+print(url_analyzed)
+result = polipy.get_policy(url_analyzed, screenshot=True)
+
+result.save(output_dir='.')
+
+
+for root, directories, files in os.walk('.', topdown=True):
+    for file in files:
+        if file.endswith(".json"):
+            file_path = os.path.join(root, file)
+            with open(file_path, 'r') as f:
+                json_data = json.load(f)
+
+
+
+
+#analyze stuff
+
+
+prompt_thingie = (f'''You are a professional html reader and summarizer, skilled in reading Privacy Policies. You will ignore all the unneccessary information not pertaining to the Privacy Policy in the file. Answer TRUE or FALSE to the following statements.
+Information Sharing with Third Parties.
+Data Selling.
+Significant Data Retention.
+Do Not Track Response not mentioned or available.
+Opt Out Not Available completely.
+Is not internationally available and uniform (look for flags that mark for certain regions having different policies).
+Is a Public Platform/Social Media AND/OR User info available to other users. 
+Settings to hide activity from other users NOT stated.
+Explanation of privacy rights is not comprehensive.
+Automated Decision making is taken.
+Updates are not notified to users.
+Access to your own data not available, or policy not mentioned.
+Deletion of your data available, or policy not mentioned.
+Explanation of purpose of data collection not given, not mentioned, or ambiguious.
+Location data collected.
+IP data collected.
+Payment data collected. 
+Is the data collected not relevant to the purpose specified in any place in this? 
+Additionally, you should justify your response. You will do this by quoting or explaining a short section which led you to this judgement. Use tokens on this judgement FIRST before attempting to answer TRUE/False. Additionally, for statement 6 mention affected regions. Your response should be in the format of a 2d python list [[], []]. The first part will be an array of true and false booleans you had generated for each statement. The second will be an array of the justifications as strings you used. The dimensions of the 2d array should thus be 2x18. Do not generate any other response, including acknowledgement of this instruction or the attached file you will read to answer these questions. You will understand these instructions thoroughly and completely. There are to be no generalizations. Do not answer in a code snippet. Answer in plain text, even though you are generating a code list.
+{json_data}''')
+genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
+model = genai.GenerativeModel("gemini-1.5-flash")
+response = model.generate_content(prompt_thingie)
+
+
+
+input_string = response.text
+trimmed_string = input_string[10:-4]
+# Convert the resulting string to a list of characters
+result_list = eval(str(trimmed_string))
+response_cleannn = result_list
+
+response_cleannn.append(['Information sharing with Third Parties.', 'Data selling', 'Significant Data Retention', 'Do Not Track Response not mentioned or available', 'Opt Out not available completely.', 'Is not internationally available and uniform.', 'Is a Public Platform/Social Media AND/OR User info available to other users.', 'Settings to hide activity from other users NOT stated.', 'Explanation of privacy rights is not comprehensive.', 'Automated decision making is taken.', 'Updates are not notified to users.', 'Access to your own data not available, or policy not mentioned.', 'Deletion of your data not available, or policy not mentioned.', 'Explanation of purpose of data collection not given, not mentioned, or ambiguious.', 'Location data collected.', 'IP data collected.', 'Payment data collected.', 'Irrelevant data collection.'])
+response_cleannn.append(['No/Limited information sharing with Third Parties.', 'No data selling at all', 'No or Extremely Short Data Retention', 'Do Not Track Response mentioned positively or available', 'Opt Out completely available.', 'Is internationally available and uniform', 'Other users do not interact with your data.', 'Settings to hide activity from other users stated.', 'Explanation of privacy rights is comprehensive.', 'Automated Decision making is not taken.', 'Updates are notified to users.', 'Access to your own data available.', 'Deletion of your data available.', 'Explanation of purpose of data collection is clear.', 'Location data not collected.', 'IP data not collected.', 'Payment data not collected or payment data not mentioned.', 'All data colection is relevant'])
+
+# Specified keys for the JSON structure
+keys = ["boolean", "judgement", "con", "pro"]
+
+
+# Transpose the 2D list to group elements by their index
+transposed_data = list(zip(*response_cleannn))
+
+# Create the JSON structure
+result_blob = {"user": [dict(zip(keys, values)) for values in transposed_data]}
+
+# Convert to JSON string (for saving or display purposes)
+json_output = json.dumps(result_blob, indent=4)
+
+# Save to a file (optional)
+with open("tableQuickfest.json", "w") as file:
+    file.write(json_output)
+
+
+def news_Fetch():
+    search = website_name + ' data leaks recent news reports'
+    url = 'https://www.duckduckgo.com/html/search/?q='+search
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:84.0) Gecko/20100101 Firefox/84.0",
+    }
+
+    page = requests.get(url, headers=headers).text
+    soup = BeautifulSoup(page, 'html.parser').find_all("a", class_="result__url", href=True)
+    counter_thing=0
+    results=[]
+
+    for link in soup:
+        results.append(link['href'])
+        counter_thing+=1
+        if counter_thing>=50:
             break
+    print(results)
+    titlearray=[]
 
-def scan_stored_xss(base_url, payloads):
-    global vulnerabilities_found
-    print("\n test stored xss")
-    endpoint = f"{base_url}/stored"
-    try:
-        requests.post(endpoint, data={'comment': 'initial_clean_comment'})
-        time.sleep(0.5)
-    except requests.exceptions.RequestException:
-        print("baseline for xss test failed.")
-        return
-    for payload in payloads:
-        try:
-            post_response = requests.post(endpoint, data={'comment': payload}, timeout=5)
-            if post_response.status_code == 200:
-                get_response = requests.get(endpoint, timeout=5)
-                if payload in get_response.text:
-                    finding = {
-                        "type": "Stored XSS",
-                        "endpoint": endpoint,
-                        "payload": payload,
-                        "proof_url": endpoint
-                    }
-                    vulnerabilities_found.append(finding)
-                    print(f"++++++ goon VULNERABLE (Stored): {endpoint}")
-                    print(f"    -> Payload: {payload}")
-                    print("-" * 20)
-        except requests.exceptions.RequestException as e:
-            print(f"error during stored XSS test for payload '{payload}': {e}")
-            break
+    for i in range(len(results)-1):
+        url_thinga = results[i]
+        reqs = requests.get(url_thinga)
+        soup_thang = BeautifulSoup(reqs.text, 'html.parser')
+        for title in soup_thang.find_all('title'):
+            temp_thanga = title.get_text()
+            titlearray.append(temp_thanga)
 
-def submit_results(submission_url, results):
-    print("\n Submit results to server ###")
-    if not results:
-        print("No vulnerabilities to submit.")
-        return
-    try:
-        response = requests.post(submission_url, json={'results': results}, timeout=5)
-        if response.status_code == 200:
-            print(f"Results successfully submitted to {submission_url}")
-        else:
-            print(f"failed to submit. server responded with status code: {response.status_code}")
-    except requests.exceptions.RequestException as e:
-        print(f"[-] Error submitting results: {e}")
+    return [results, titlearray]
 
-if __name__ == '__main__': #why am i using main lol i have NEVER used ts before i could jst delete it and the indentation but it would lowkey be funny if i kept it in
-    payloads_to_test = load_payloads(PAYLOAD_FILE)
-    if payloads_to_test:
-        scan_reflected_xss(TARGET_URL, payloads_to_test)
-        scan_stored_xss(TARGET_URL, payloads_to_test)
-        print("\n scan done!")
-        if vulnerabilities_found:
-            print(f"Found {len(vulnerabilities_found)} potential vulnerabilities.")
-            submit_results(SUBMISSION_URL, vulnerabilities_found)
-        else:
-            print("No vulnerabilities were detected.")
+thingie=news_Fetch()
+titlearray = thingie[1]
+links= thingie[0]
+
+keys=titlearray
+values=links
+
+# Build the JSON structure
+json_structure = {
+    "users": [{key: value} for key, value in zip(keys, values)]
+}
+
+# Convert the structure to a JSON string
+json_string = json.dumps(json_structure, indent=4)
+
+# Print the JSON string
+with open("newsQuickfest.json", "w") as file:
+    file.write(json_string)
+
+
+notautistic = SentimentIntensityAnalyzer()
+positiveScore = 0.5
+for i in titlearray:
+    sentiment_score = notautistic.polarity_scores(i)
+    print(sentiment_score)
+    positiveScore = positiveScore + sentiment_score['compound']
+
+def analysis():
+    if positiveScore/50 < 0:
+        return ('The media does not seem to happy about this one...')
     else:
-        print("Could not load payloads.")
+        return ('There is not too much hateful rhetoric in the media this time...')
+
+analysis_report = analysis()
+genai.configure(api_key="AIzaSyBfTeyoXqdKDTv-0S9auvehejBCMtrzaVQ") #ADD - ashleys code
+response_no = model.generate_content(f"Generate a response of an integer between 0 and 100 rating data security on {name}. Only respond with this number and nothing else.")
+
+clean_no = int(re.sub(r"[^0-9]", "", response_no))
+
+json_data = {
+    "score": clean_no,
+    "analysis": analysis_report
+}
 
 
+# Save the JSON structure to a file
+with open("scoringQuickfest.json", "w") as json_file:
+    json.dump(json_data, json_file, indent=4)
 
-
-
-#TESTING CRYPTO
-
-
-
-
-
-SECRET_PATTERNS = [
-    r'api[_-]?key\s*=\s*["\'].*["\']',
-    r'password\s*=\s*["\'].*["\']',
-    r'secret\s*=\s*["\'].*["\']',
-    r'BEGIN PRIVATE KEY',
-    r'aws_access_key_id',
-]
-
-WEAK_CRYPTO_PATTERNS = [
-    r'md5\(', r'sha1\(', r'DES\(', r'RC4', r'AES\/ECB'
-    ]
-
-HARDCODED_KEY_PATTERNS = [r'key\s*=\s*["\'][A-Za-z0-9]{6,}["\']', r'iv\s*=\s*["\'][A-Za-z0-9]{6,}["\']',]
-
-#def shannon_entropy_or_some_shi_bro(string):
-#    prob = [float(string.count(c)) / len(string) for c in dict.fromkeys(list(string))]
-#    entropy = -sum([p * math.log(p) / math.log(2.0) for p in prob])
-#    return entropy
-#this stuff AINT WORK
-#def looks_like_secret(value):
-#    return shannon_entropy_or_some_shi_bro(value) > 3.5 and len(value) > 20
-
-
-def scan_content(content):
-    issues = []
-    lines = content.splitlines()
-    for i, line in enumerate(lines):
-        for pattern in SECRET_PATTERNS:
-            if re.search(pattern, line, re.IGNORECASE):
-                issues.append(("exposed a secret GASP", i+1, line.strip()))
-        for pattern in WEAK_CRYPTO_PATTERNS:
-            if re.search(pattern, line, re.IGNORECASE):
-                issues.append(("Old ass encryption", i+1, line.strip()))
-
-        for pattern in HARDCODED_KEY_PATTERNS:
-            if re.search(pattern, line, re.IGNORECASE):
-                issues.append(("Hardcode crypto lmaol", i+1, line.strip()))
-        strings = re.findall(r'["\'](.*?)["\']', line)
-
-        #for s in strings: LOL DOES NOT WORK
-        #   if looks_like_secret(s):
-        #       issues.append(("Possible secret", i+1, line.strip()))
-    status = "FAIL" if issues else "PASS"
-    return status, issues
-
-hi_lol=my_code_file_i_love_hu_tao
-status, issues = scan_content(hi_lol)
-print(status)
-#can use issues but not rn
